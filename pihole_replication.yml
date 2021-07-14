@@ -1,12 +1,13 @@
 ---
 
-- hosts: "{{ HOSTS | default ('all') }}"
+- hosts: "{{ pihole_source_host | default ('all') }}"
   vars:
     pihole_home: '/etc/pihole/'
     pihole_gravity_db: '{{ pihole_home }}gravity.db'
     pihole_customlist: '{{ pihole_home }}custom.list'
     pihole_adlist: '{{ pihole_home }}adlist.csv'
     pihole_domainlist: '{{ pihole_home }}domainlist.csv'
+    pihole_dhcpleases: '{{ pihole_home }}dhcp.leases'
     dnsmasq_home: '/etc/dnsmasq.d/'
     dnsmasq_cnamelist: '{{ dnsmasq_home }}05-pihole-custom-cname.conf'
     pihole_user: pihole
@@ -25,14 +26,15 @@
     fetch:
       src: "{{ item }}"
       dest: "/tmp{{ item }}"
-      fail_on_missing: false
+#      fail_on_missing: false
       flat: true
     become: true
     loop:
-      - pihole_adlist
-      - pihole_domainlist
-      - pihole_customlist
-      - dnsmasq_cnamelist
+      - "{{ pihole_adlist }}"
+      - "{{ pihole_domainlist }}"
+      - "{{ pihole_customlist }}"
+      - "{{ dnsmasq_cnamelist }}"
+      - "{{ pihole_dhcpleases }}"
 
   - name: Stopping piHole on Target Host {{ pihole_target_host }}
     service:
@@ -51,28 +53,29 @@
     become: true
     delegate_to: "{{ pihole_target_host }}"
     loop:
-      - pihole_adlist
-      - pihole_domainlist
-      - pihole_customlist
-      - dnsmasq_cnamelist
+      - "{{ pihole_adlist }}"
+      - "{{ pihole_domainlist }}"
+      - "{{ pihole_customlist }}"
+      - "{{ dnsmasq_cnamelist }}"
+      - "{{ pihole_dhcpleases }}"
 
   - name: Drop Table AdList
-    shell: 'sqlite3 {{ pihole_gravity_db }} "DROP TABLE adlist;'
+    shell: 'sqlite3 {{ pihole_gravity_db }} "DROP TABLE adlist;"'
     become: true
     delegate_to: "{{ pihole_target_host }}"
     
   - name: Drop Table Domainlist
-    shell: 'sqlite3 {{ pihole_gravity_db }} "DROP TABLE domainlist;'
+    shell: 'sqlite3 {{ pihole_gravity_db }} "DROP TABLE domainlist;"'
     become: true
     delegate_to: "{{ pihole_target_host }}"
 
   - name: Import Table AdList
-    shell: 'sqlite3 {{ pihole_gravity_db }} ".import {{ pihole_adlist }} adlist'
+    shell: 'sqlite3 {{ pihole_gravity_db }} ".import {{ pihole_adlist }} adlist"'
     become: true
     delegate_to: "{{ pihole_target_host }}"
 
   - name: Import Table Domainlist
-    shell: 'sqlite3 {{ pihole_gravity_db }} ".import {{ pihole_domainlist }} domainlist'
+    shell: 'sqlite3 {{ pihole_gravity_db }} ".import {{ pihole_domainlist }} domainlist"'
     become: true
     delegate_to: "{{ pihole_target_host }}"
 
@@ -80,3 +83,15 @@
     shell: "pihole -g"
     become: true
     delegate_to: "{{ pihole_target_host }}"
+
+  - name: Cleanup temporary Files
+    file:
+      path: "/tmp{{ item }}"
+      state: absent
+    delegate_to: localhost
+    loop:
+      - "{{ pihole_adlist }}"
+      - "{{ pihole_domainlist }}"
+      - "{{ pihole_customlist }}"
+      - "{{ dnsmasq_cnamelist }}"
+      - "{{ pihole_dhcpleases }}"
