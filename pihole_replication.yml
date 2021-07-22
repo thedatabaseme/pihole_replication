@@ -26,7 +26,6 @@
     fetch:
       src: "{{ item }}"
       dest: "/tmp{{ item }}"
-#      fail_on_missing: false
       flat: true
     become: true
     loop:
@@ -62,11 +61,13 @@
   - name: Drop Table AdList
     shell: 'sqlite3 {{ pihole_gravity_db }} "DROP TABLE adlist;"'
     become: true
+    ignore_errors: true
     delegate_to: "{{ pihole_target_host }}"
     
   - name: Drop Table Domainlist
     shell: 'sqlite3 {{ pihole_gravity_db }} "DROP TABLE domainlist;"'
     become: true
+    ignore_errors: true
     delegate_to: "{{ pihole_target_host }}"
 
   - name: Import Table AdList
