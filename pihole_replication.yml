@@ -10,6 +10,7 @@
     pihole_dhcpleases: '{{ pihole_home }}dhcp.leases'
     dnsmasq_home: '/etc/dnsmasq.d/'
     dnsmasq_cnamelist: '{{ dnsmasq_home }}05-pihole-custom-cname.conf'
+    dnsmasq_static_dhcp: '{{ dnsmasq_home }}04-pihole-static-dhcp.conf'
     pihole_user: pihole
     pihole_group: pihole
   tasks:
@@ -26,6 +27,7 @@
     fetch:
       src: "{{ item }}"
       dest: "/tmp{{ item }}"
+#      fail_on_missing: false
       flat: true
     become: true
     loop:
@@ -34,6 +36,7 @@
       - "{{ pihole_customlist }}"
       - "{{ dnsmasq_cnamelist }}"
       - "{{ pihole_dhcpleases }}"
+      - "{{ dnsmasq_static_dhcp }}"
 
   - name: Stopping piHole on Target Host {{ pihole_target_host }}
     service:
@@ -57,17 +60,16 @@
       - "{{ pihole_customlist }}"
       - "{{ dnsmasq_cnamelist }}"
       - "{{ pihole_dhcpleases }}"
+      - "{{ dnsmasq_static_dhcp }}"
 
   - name: Drop Table AdList
     shell: 'sqlite3 {{ pihole_gravity_db }} "DROP TABLE adlist;"'
     become: true
-    ignore_errors: true
     delegate_to: "{{ pihole_target_host }}"
     
   - name: Drop Table Domainlist
     shell: 'sqlite3 {{ pihole_gravity_db }} "DROP TABLE domainlist;"'
     become: true
-    ignore_errors: true
     delegate_to: "{{ pihole_target_host }}"
 
   - name: Import Table AdList
@@ -96,3 +98,4 @@
       - "{{ pihole_customlist }}"
       - "{{ dnsmasq_cnamelist }}"
       - "{{ pihole_dhcpleases }}"
+      - "{{ dnsmasq_static_dhcp }}"
