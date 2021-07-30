@@ -65,11 +65,13 @@
   - name: Drop Table AdList
     shell: 'sqlite3 {{ pihole_gravity_db }} "DROP TABLE adlist;"'
     become: true
+    ignore_errors: true
     delegate_to: "{{ pihole_target_host }}"
     
   - name: Drop Table Domainlist
     shell: 'sqlite3 {{ pihole_gravity_db }} "DROP TABLE domainlist;"'
     become: true
+    ignore_errors: true
     delegate_to: "{{ pihole_target_host }}"
 
   - name: Import Table AdList
