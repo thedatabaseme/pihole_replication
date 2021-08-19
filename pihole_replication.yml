@@ -16,11 +16,11 @@
   tasks:
 
   - name: Generate AdList
-    shell: 'sqlite3 {{ pihole_gravity_db }} -header -csv "select * from adlist" > {{ pihole_adlist }}'
+    shell: 'sqlite3 {{ pihole_gravity_db }} -header -csv -separator "|" "select * from adlist" > {{ pihole_adlist }}'
     become: true
   
   - name: Generate Domainlist
-    shell: 'sqlite3 {{ pihole_gravity_db }} -header -csv "select * from domainlist" > {{ pihole_domainlist }}'
+    shell: 'sqlite3 {{ pihole_gravity_db }} -header -csv -separator "|" "select * from domainlist" > {{ pihole_domainlist }}'
     become: true
 
   - name: Fetch all Files to localhost
