@@ -84,8 +84,15 @@
     become: true
     delegate_to: "{{ pihole_target_host }}"
 
-  - name: Starting pioHole on Target Host {{ pihole_target_host }}
+  - name: Update Gravity DB on Host {{ pihole_target_host }}
     shell: "pihole -g"
+    become: true
+    delegate_to: "{{ pihole_target_host }}"
+
+  - name: Starting piHole on Target Host {{ pihole_target_host }}
+    service:
+      name: pihole-FTL
+      state: started
     become: true
     delegate_to: "{{ pihole_target_host }}"
 
