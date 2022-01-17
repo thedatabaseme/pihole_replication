@@ -20,6 +20,7 @@ Default Variables:
 
     pihole_home: '/etc/pihole/'
     pihole_gravity_db: '{{ pihole_home }}gravity.db'
+    pihole_config: '{{ pihole_home }}pihole-FTL.conf'
     pihole_customlist: '{{ pihole_home }}custom.list'
     pihole_adlist: '{{ pihole_home }}adlist.csv'
     pihole_domainlist: '{{ pihole_home }}domainlist.csv'
