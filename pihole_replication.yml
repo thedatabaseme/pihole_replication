@@ -94,3 +94,4 @@
       - "{{ dnsmasq_cnamelist }}"
       - "{{ pihole_dhcpleases }}"
       - "{{ dnsmasq_static_dhcp }}"
+      - "{{ pihole_gravity_db }}"
