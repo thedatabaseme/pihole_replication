@@ -90,7 +90,9 @@
   - name: Update Gravity DB on Host {{ pihole_target_host }}
     shell: "pihole -g"
     become: true
+    register: update_gravity_results
     delegate_to: "{{ pihole_target_host }}"
+    failed_when: ("Error" in update_gravity_results.stdout)
 
   - name: Starting piHole on Target Host {{ pihole_target_host }}
     service:
