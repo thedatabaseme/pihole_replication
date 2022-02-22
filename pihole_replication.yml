@@ -39,6 +39,7 @@
       - "{{ dnsmasq_cnamelist }}"
       - "{{ pihole_dhcpleases }}"
       - "{{ dnsmasq_static_dhcp }}"
+      - "{{ pihole_gravity_db }}"
 
   - name: Stopping piHole on Target Host {{ pihole_target_host }}
     service:
@@ -64,28 +65,7 @@
       - "{{ dnsmasq_cnamelist }}"
       - "{{ pihole_dhcpleases }}"
       - "{{ dnsmasq_static_dhcp }}"
-
-  - name: Drop Table AdList
-    shell: 'sqlite3 {{ pihole_gravity_db }} "DROP TABLE adlist;"'
-    become: true
-    ignore_errors: true
-    delegate_to: "{{ pihole_target_host }}"
-    
-  - name: Drop Table Domainlist
-    shell: 'sqlite3 {{ pihole_gravity_db }} "DROP TABLE domainlist;"'
-    become: true
-    ignore_errors: true
-    delegate_to: "{{ pihole_target_host }}"
-
-  - name: Import Table AdList
-    shell: 'sqlite3 {{ pihole_gravity_db }} ".import {{ pihole_adlist }} adlist"'
-    become: true
-    delegate_to: "{{ pihole_target_host }}"
-
-  - name: Import Table Domainlist
-    shell: 'sqlite3 {{ pihole_gravity_db }} ".import {{ pihole_domainlist }} domainlist"'
-    become: true
-    delegate_to: "{{ pihole_target_host }}"
+      - "{{ pihole_gravity_db }}"
 
   - name: Update Gravity DB on Host {{ pihole_target_host }}
     shell: "pihole -g"
@@ -114,3 +94,4 @@
       - "{{ dnsmasq_cnamelist }}"
       - "{{ pihole_dhcpleases }}"
       - "{{ dnsmasq_static_dhcp }}"
+      - "{{ pihole_gravity_db }}"
