@@ -40,12 +40,12 @@
       - "{{ pihole_dhcpleases }}"
       - "{{ dnsmasq_static_dhcp }}"
 
-  - name: Stopping piHole on Target Host {{ pihole_target_host }}
-    service:
-      name: pihole-FTL
-      state: stopped
-    become: true
-    delegate_to: "{{ pihole_target_host }}"
+#  - name: Stopping piHole on Target Host {{ pihole_target_host }}
+#    service:
+#      name: pihole-FTL
+#      state: stopped
+#    become: true
+#    delegate_to: "{{ pihole_target_host }}"
 
   - name: Copy all Files to Target Host {{ pihole_target_host }}
     copy:
