@@ -21,7 +21,6 @@
     shell: "pihole -g"
     become: true
     when: update_gravity_on_source
-    failed_when: ("Error" in update_gravity_results.stdout)
 
   - name: Generate AdList
     shell: 'sqlite3 {{ pihole_gravity_db }} -header -csv -separator "|" "select * from adlist" > {{ pihole_adlist }}'
