@@ -14,7 +14,14 @@
     dnsmasq_static_dhcp: '{{ dnsmasq_home }}04-pihole-static-dhcp.conf'
     pihole_user: pihole
     pihole_group: pihole
+    update_gravity_on_source: true
   tasks:
+
+  - name: Update Gravity DB on source host {{ pihole_source_host }}
+    shell: "pihole -g"
+    become: true
+    when: update_gravity_on_source
+    failed_when: ("Error" in update_gravity_results.stdout)
 
   - name: Generate AdList
     shell: 'sqlite3 {{ pihole_gravity_db }} -header -csv -separator "|" "select * from adlist" > {{ pihole_adlist }}'
