@@ -29,6 +29,9 @@ Default Variables:
     dnsmasq_cnamelist: '{{ dnsmasq_home }}05-pihole-custom-cname.conf'
     pihole_user: pihole
     pihole_group: pihole
+    update_gravity_on_source: true
+
+When setting `update_gravity_on_source`, a Gravity DB update will take place on the source host before the actual replication starts.
 
 More Informations
 ------------
